@@ -20,7 +20,7 @@ function Mario() {
   this.jumping = false;
   this.jumping2 = false;
   this.grounded = false;
-  this.grounded2 = false;
+  this.grounded2 = true;
   this.invulnerable = false;
   this.invulnerable2 = false;
   this.sX = 0; // sprite x

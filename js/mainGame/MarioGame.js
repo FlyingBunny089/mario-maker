@@ -3,6 +3,9 @@
 function MarioGame() {
   var gameUI = GameUI.getInstance();
 
+  const baselevel = 410;
+  const character2JumpHeight = 80;
+
   var maxWidth; //width of the game world
   var height;
   var viewPort; //width of canvas, viewPort that can be seen
@@ -678,13 +681,14 @@ function MarioGame() {
     }
 
 
-    if (keys[87]) {
-      // w key
+    if (keys[8]) {
+      console.log("backspace key")
+      // backspace key
       // mario2 jump
       if (!mario.jumping2 && mario.grounded2) {
         mario.jumping2 = true;
         mario.grounded2 = false;
-        mario.velY2 += 1;
+        mario.velY2 =+ (2 + 5.5);
 
         // mario sprite position
         if (mario.frame2 == 0 || mario.frame2 == 1) {
@@ -695,6 +699,11 @@ function MarioGame() {
 
         //sound when mario jumps
         gameSound.play('jump');
+        mario.velX2 *= friction;
+        mario.velY2 -= gravity;
+        
+        mario.x2 += mario.velX2;
+        mario.y2 -= mario.velY2*2;
       }
     }
 
@@ -847,16 +856,40 @@ function MarioGame() {
     mario.velX *= friction;
     mario.velY += gravity;
 
-    console.log("mario.velX2 :"+mario.velX2);
-    console.log("mario.velY2:"+mario.velY2);
-    mario.velX2 *= friction;
-    mario.velY2 *= gravity;
-    
+    //console.log("mario.velX2 :"+mario.velX2);
+    //console.log("mario.velY2:"+mario.velY2);
+
+
     mario.x += mario.velX;
     mario.y += mario.velY;
+    this.character2Jump(friction, gravity);
 
-    mario.x2 += mario.velX2;
-    mario.y2 -= mario.velY2;
+
+
+  };
+
+  this.character2Jump = function(friction, gravity) {
+    console.log("mario.y2:"+mario.y2);
+    console.log("mario.x2:"+mario.x2);
+    if(mario.jumping2 && mario.y2 > (baselevel-character2JumpHeight))
+    {
+      mario.velX2 *= friction;
+      //mario.velY2 += gravity;
+
+      mario.x2 += mario.velX2;
+      mario.y2 -= 2;
+    }else if(mario.y2 < baselevel)
+    {
+      mario.jumping2 = false;
+      mario.velX2 *= friction;
+      //mario.velY2 -= gravity;
+
+      mario.x2 += mario.velX2;
+      mario.y2 += 2;
+    }else{
+      mario.grounded2 = true;
+      mario.jumping2 = false;
+    }
   };
 
   this.checkMarioPos = function() {
