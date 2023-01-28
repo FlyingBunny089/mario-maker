@@ -68,6 +68,7 @@ function MarioGame() {
       mario.init();
     } else {
       mario.x = 10;
+      mario.x2 = 20;
       mario.frame = 0;
     }
     element = new Element();
@@ -676,6 +677,27 @@ function MarioGame() {
       }
     }
 
+
+    if (keys[87]) {
+      // w key
+      // mario2 jump
+      if (!mario.jumping2 && mario.grounded2) {
+        mario.jumping2 = true;
+        mario.grounded2 = false;
+        mario.velY2 += 1;
+
+        // mario sprite position
+        if (mario.frame2 == 0 || mario.frame2 == 1) {
+          mario.frame2 = 3; //right jump
+        } else if (mario.frame2 == 8 || mario.frame2 == 9) {
+          mario.frame2 = 2; //left jump
+        }
+
+        //sound when mario jumps
+        gameSound.play('jump');
+      }
+    }
+
     if (keys[39]) {
       //right arrow
       that.checkMarioPos(); //if mario goes to the center of the screen, sidescroll the map
@@ -700,6 +722,33 @@ function MarioGame() {
       }
     }
 
+
+    if (keys[68]) {
+      // d key
+      // mario2 move forward
+      that.checkMarioPos2(); //if mario goes to the center of the screen, sidescroll the map
+
+      if (mario.velX2 < mario.speed2) {
+        mario.velX2++;
+      }
+
+      //mario sprite position
+      if (!mario.jumping2) {
+        tickCounter += 1;
+
+        if (tickCounter > maxTick / mario.speed2) {
+          tickCounter = 0;
+
+          if (mario.frame2 != 1) {
+            mario.frame2 = 1;
+          } else {
+            mario.frame2 = 0;
+          }
+        }
+      }
+    } 
+
+
     if (keys[37]) {
       //left arrow
       if (mario.velX > -mario.speed) {
@@ -721,6 +770,31 @@ function MarioGame() {
         }
       }
     }
+
+
+    if (keys[65]) {
+      // a key
+      // mario2 move left
+      if (mario.velX2 > -mario.speed2) {
+        mario.velX2--;
+      }
+
+      //mario sprite position
+      if (!mario.jumping2) {
+        tickCounter += 1;
+
+        if (tickCounter > maxTick / mario.speed2) {
+          tickCounter = 0;
+
+          if (mario.frame2 != 9) {
+            mario.frame2 = 9;
+          } else {
+            mario.frame2 = 8;
+          }
+        }
+      }
+    }
+
 
     if (keys[16]) {
       //shift key
@@ -773,8 +847,16 @@ function MarioGame() {
     mario.velX *= friction;
     mario.velY += gravity;
 
+    console.log("mario.velX2 :"+mario.velX2);
+    console.log("mario.velY2:"+mario.velY2);
+    mario.velX2 *= friction;
+    mario.velY2 *= gravity;
+    
     mario.x += mario.velX;
     mario.y += mario.velY;
+
+    mario.x2 += mario.velX2;
+    mario.y2 -= mario.velY2;
   };
 
   this.checkMarioPos = function() {
@@ -782,6 +864,17 @@ function MarioGame() {
 
     //side scrolling as mario reaches center of the viewPort
     if (mario.x > centerPos && centerPos + viewPort / 2 < maxWidth) {
+      gameUI.scrollWindow(-mario.speed, 0);
+      translatedDist += mario.speed;
+    }
+  };
+
+
+  this.checkMarioPos2 = function() {
+    centerPos = translatedDist + viewPort / 2;
+
+    //side scrolling as mario reaches center of the viewPort
+    if (mario.x2 > centerPos && centerPos + viewPort / 2 < maxWidth) {
       gameUI.scrollWindow(-mario.speed, 0);
       translatedDist += mario.speed;
     }
