@@ -4,7 +4,7 @@ function MarioGame() {
   var gameUI = GameUI.getInstance();
 
   const baselevel = 410;
-  const character2JumpHeight = 80;
+  const character2JumpHeight = 120;
 
   var maxWidth; //width of the game world
   var height;
@@ -681,9 +681,9 @@ function MarioGame() {
     }
 
 
-    if (keys[8]) {
+    if (keys[87]) {
       console.log("backspace key")
-      // backspace key
+      // w key
       // mario2 jump
       if (!mario.jumping2 && mario.grounded2) {
         mario.jumping2 = true;
